@@ -113,6 +113,7 @@ export const api=createApi({
 export const {
    useGetCoursesQuery,
     useGetCourseQuery,
+    useGetTransactionsQuery,
     useUpdateUserMutation,
     useCreateTransactionMutation,
     useCreateStripePaymentIntentMutation,
