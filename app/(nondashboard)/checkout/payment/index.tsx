@@ -31,16 +31,36 @@ const PaymentPageContent = () => {
             return;
         }
 
-        const baseUrl = process.env.NEXT_PUBLIC_LOCAL_URL
-            ? `http://${process.env.NEXT_PUBLIC_LOCAL_URL}`
-            : process.env.NEXT_PUBLIC_VERCEL_URL
-                ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-                : undefined;
+        const getReturnUrl = () => {
+            const redirectBase = process.env.NEXT_PUBLIC_STRIPE_REDIRECT_URL;
+
+            if (redirectBase) {
+                const url = new URL(redirectBase);
+                if (courseId) url.searchParams.set("id", courseId);
+                return url.toString();
+            }
+
+            if (typeof window !== "undefined") {
+                const url = new URL("/checkout", window.location.origin);
+                url.searchParams.set("step", "3");
+                if (courseId) url.searchParams.set("id", courseId);
+                return url.toString();
+            }
+
+            return undefined;
+        };
+
+        const returnUrl = getReturnUrl();
+
+        if (!returnUrl) {
+            toast.error("Unable to determine return URL for Stripe redirect");
+            return;
+        }
 
         const result = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `${baseUrl}/checkout?step=3&id=${courseId}`,
+                return_url: returnUrl,
             },
             redirect: "if_required",
         });
