@@ -21,20 +21,14 @@ import { useGetTransactionsQuery } from "@/state/api";
 import { useUser } from "@clerk/nextjs";
 import React, { useState } from "react";
 
-const UserBilling = () => {
-    // Track the currently selected payment type filter in the dropdown.
+const TeacherBilling = () => {
     const [paymentType, setPaymentType] = useState("all");
-
-    // Retrieve the authenticated user information from Clerk.
     const { user, isLoaded } = useUser();
-
-    // Fetch the user's transactions once the user data has finished loading.
     const { data: transactions, isLoading: isLoadingTransactions } =
         useGetTransactionsQuery(user?.id || "", {
             skip: !isLoaded || !user,
         });
 
-    // Filter transactions based on the selected payment type.
     const filteredData =
         transactions?.filter((transaction) => {
             const matchesTypes =
@@ -46,7 +40,7 @@ const UserBilling = () => {
     if (!user) return <div>Please sign in to view your billing information.</div>;
 
     return (
-        <div className="billing w-3/4 mx-auto">
+        <div className="billing">
             <div className="billing__container">
                 <h2 className="billing__title">Payment History</h2>
                 <div className="billing__filters">
@@ -56,13 +50,13 @@ const UserBilling = () => {
                         </SelectTrigger>
 
                         <SelectContent className="billing__select-content">
-                            <SelectItem className="billing__select-item text-background" value="all">
+                            <SelectItem className="billing__select-item" value="all">
                                 All Types
                             </SelectItem>
-                            <SelectItem className="billing__select-item text-background" value="stripe">
+                            <SelectItem className="billing__select-item" value="stripe">
                                 Stripe
                             </SelectItem>
-                            <SelectItem className="billing__select-item text-background" value="paypal">
+                            <SelectItem className="billing__select-item" value="paypal">
                                 Paypal
                             </SelectItem>
                         </SelectContent>
@@ -120,4 +114,4 @@ const UserBilling = () => {
     );
 };
 
-export default UserBilling;
+export default TeacherBilling;
