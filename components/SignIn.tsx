@@ -21,7 +21,6 @@ const SignInComponent = () => {
         }
 
         const userType = user?.publicMetadata?.userType as string;
-        console.log(user);
         if (userType === "teacher") {
             return "/teacher/courses";
         }
